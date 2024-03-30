@@ -1,21 +1,22 @@
 package main
 
-import (
-	"io"
-	"log"
-	"net/http"
-)
+import "log"
 
 var Routess = []Route{
 	{
-		Path: "/hola",
+		Path: "/{$}",
 		Name: "Root",
-		Handler: func(w http.ResponseWriter, r *http.Request) {
-			log.Println("HHHH")
-			//response := OkResponse{Message: "ok", Status: 200, Data: nil}
-			io.WriteString(w, "Hello, world!\n")
-			//w.Header().Set("Content-Type", "application/json")
-			//json.NewEncoder(w).Encode(response)
+		Handler: func(r Response) {
+			log.Println("Root")
+			r.SetBody(JSONApiResponse{Data: "Asdasdasdasd"}).Send()
+		},
+	},
+	{
+		Path: "/hello",
+		Name: "Saludo",
+		Handler: func(r Response) {
+			log.Println("Saludo")
+			r.SetBody(JSONApiResponse{Data: "Hola"}).Send()
 		},
 	},
 }

@@ -8,12 +8,12 @@ import (
 type Route struct {
 	Name    string
 	Path    string
-	Handler func(w http.ResponseWriter, r *http.Request)
+	Handler func(r Response)
 }
 
 type Middleware struct {
 	name           string
-	fn             func(w http.ResponseWriter, r *http.Request) bool
+	fn             func(r Response) bool
 	exceptionNames []string
 }
 
@@ -38,6 +38,7 @@ type Router struct {
 
 func (router Router) registerRoute(route Route) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
+		response := newResponse(w, r)
 		log.Println("Conected to ", route.Name)
 		for _, middleware := range router.middlewares {
 			mustSkip := middleware.mustSkip(route.Name)
@@ -45,12 +46,12 @@ func (router Router) registerRoute(route Route) {
 				continue
 			}
 
-			if !middleware.fn(w, r) {
+			if !middleware.fn(response) {
 				return
 			}
 		}
 
-		route.Handler(w, r)
+		route.Handler(response)
 	}
 
 	http.HandleFunc(route.Path, handler)

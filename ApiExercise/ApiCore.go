@@ -50,13 +50,13 @@ func (b *Bootstrap) Start() {
 		return
 	}
 
-	println("Loading endpoints")
+	println("Loading endpoints", len(Routess))
 	for key, route := range Routess {
 		fmt.Printf("%d.- %s loaded\n", key, route.Name)
 		router.registerRoute(route)
 	}
 
 	url := fmt.Sprintf(":%s", b.Port)
-	log.Printf("Server listening on port %s %s", b.Port, url)
+	log.Printf("Server listening on port %s", b.Port)
 	log.Fatal(http.ListenAndServe(url, nil))
 }
